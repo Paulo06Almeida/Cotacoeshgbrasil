@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<title>Calculo cotacoes</title>
+<meta charset="UTF-8">
+
+<head>
+  <link rel="stylesheet" type="text/css" href="./estilo.css" />
+
+  <script type="text/javascript" src="./Comuns.js"></script>
+  <script type="text/javascript" src="./Acoes.js"></script>
+  <script type="text/javascript" src="./Selic.js"></script>
+
+</head>
+
+<body>
+  <div class="container">
+    <h2>Calculo trade Ações</h2>
+    <label for="lname">Ativo</label>
+    <input type="text" id="ativo" name="ativo" placeholder="Insira um ativo">
+    <label for="lname">Percentual</label>
+    <input type="text" id="percentual" name="percentual" placeholder="% que deseja vender">
+    <label for="lname">Capital</label>
+    <input type="text" id="valcapital" name="valcapital" placeholder="Quantidade em R$ ">
+
+    <input type="submit" value="Submit" onclick="GetAtivo()"><br><br>
+
+    <label for="lname">Valor Ativo</label>
+    <input type="text" id="valativo" name="valativo">
+    <label for="lname">Quantidade</label>
+    <input type="text" id="qtdacoes" name="qtdacoes">
+    <label for="lname">Valor Ativo Venda</label>
+    <input type="text" id="valvenda" name="valvenda">
+    <label for="lname">Lucro</label>
+    <input type="text" id="lucro" name="lucro">
+
+
+    <h2>Calculo investimento SELIC</h2>
+    <label for="lname">Capital</label>
+    <input type="text" id="valcapitalF" name="valcapitalF" placeholder="Valor que deeja investir">
+    <label for="lname">Tempo em Anos</label>
+    <input type="text" id="tempo" name="tempo" placeholder="Tempo em anos">
+
+    
+    <input type="submit" value="Submit" onclick="GetSELIC()"><br><br>
+
+    <label for="lname">SELIC % anual</label>
+    <input type="text" id="perctSelic" name="perctSelic">
+    <label for="lname">Valor Final</label>
+    <input type="text" id="valFinalF" name="valFinalF">
+    <label for="lname">Lucro</label>
+    <input type="text" id="lucroSelic" name="lucro">
+
+  </div>
+</body>
+<script>
+
+  var chaveAcesso = "18d52f37";
+  var endpoint = "https://api.hgbrasil.com/finance";
+  function GetAtivo() {
+    var myHeaders = new Headers();
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow'
+    };
+    var stringAtivo = document.getElementById("ativo").value;
+    fetch(endpoint + "/stock_price?key=" + chaveAcesso + "&symbol=" + stringAtivo, requestOptions)
+      .then(response => response.json())
+      .then(
+        function (result) {
+          Capital = document.getElementById("valcapital").value;
+          Perct = document.getElementById("percentual").value;
+          objtativo = result.results[stringAtivo];
+          objCalcAcoes = CalculoAcoes(Capital, Perct, objtativo.price);
+
+          document.getElementById("valativo").value = objtativo.price;
+          document.getElementById("qtdacoes").value = objCalcAcoes.Quantidade.toFixed(2);
+          document.getElementById("valvenda").value = objCalcAcoes.AtivoVenda.toFixed(2);
+          document.getElementById("lucro").value = LucroLiquidoAcoes(Capital, objCalcAcoes.Quantidade.toFixed(2), objCalcAcoes.AtivoVenda.toFixed(2)).toFixed(2);
+
+        }
+      )
+      .catch(error => console.log('error', error));
+  }
+
+  function GetSELIC() {
+    var myHeaders = new Headers();
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow'
+    };
+
+    fetch(endpoint + "/taxes?key=" + chaveAcesso, requestOptions)
+      .then(response => response.json())
+      .then(
+        function (result) {
+          CapitalSelic = document.getElementById("valcapitalF").value;
+          Tempo = document.getElementById("tempo").value;
+          objtativoSelic = result.results[0];
+          objCalcSelic = CalculoSelic(CapitalSelic,Tempo,objtativoSelic.selic);
+
+          document.getElementById("perctSelic").value = objtativoSelic.selic;
+          document.getElementById("valFinalF").value = objCalcSelic.ValorFinal.toFixed(2);
+          document.getElementById("lucroSelic").value = objCalcSelic.Lucro.toFixed(2);
+          
+        }
+      )
+      .catch(error => console.log('error', error));
+  }
+</script>
+
+</html>
