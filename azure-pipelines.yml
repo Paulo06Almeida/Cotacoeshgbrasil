@@ -1,4 +1,10 @@
 # HTML
+- task: SonarQubePrepare@4
+  inputs:
+    SonarQube: 'SonarqubeLocal'
+    scannerMode: 'MSBuild'
+    projectKey: 'Cotacoeshgbrasil'
+    projectName: 'Cotacoeshgbrasil'
 # Archive your static HTML project and save it with the build record.
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
