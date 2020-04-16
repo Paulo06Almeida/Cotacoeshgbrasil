@@ -14,11 +14,10 @@ steps:
   inputs:
     rootFolderOrFile: '$(build.sourcesDirectory)'
     includeRootFolder: false
+- task: PublishBuildArtifacts@1
 - task: SonarQubePrepare@4
   inputs:
-    SonarQube: 'SonarqubeLocal'
+    SonarQube: 'SonarLocal'
     scannerMode: 'MSBuild'
     projectKey: 'Cotacoeshgbrasil'
     projectName: 'Cotacoeshgbrasil'
-- task: SonarQubeAnalyze@4
-- task: PublishBuildArtifacts@1
