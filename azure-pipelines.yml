@@ -21,3 +21,4 @@ steps:
     scannerMode: 'MSBuild'
     projectKey: 'Cotacoeshgbrasil'
     projectName: 'Cotacoeshgbrasil'
+- task: SonarQubeAnalyze@4
